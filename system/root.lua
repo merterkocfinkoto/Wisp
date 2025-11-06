@@ -4,7 +4,7 @@
 --  Holds and manages the App wisp as its primary child.
 --========================================================--
 
-local Wisp = require("wisp")
+local Wisp = require("system.wisp")
 local App  = require("app")
 
 ------------------------------------------------------------

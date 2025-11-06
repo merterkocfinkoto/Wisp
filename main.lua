@@ -5,7 +5,7 @@
 --  and input handling through its hierarchy.
 --========================================================--
 
-local Root = require("root")
+local Root = require("system.root")
 
 ------------------------------------------------------------
 -- Initialization

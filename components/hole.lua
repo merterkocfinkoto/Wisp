@@ -1,4 +1,4 @@
-local Wisp = require("wisp")
+local Wisp = require("system.wisp")
 local Hole = setmetatable({}, { __index = Wisp })
 Hole.__index = Hole
 

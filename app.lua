@@ -1,23 +1,10 @@
 --========================================================--
 --  APP WISP
---  Dynamically loads all entity modules except excluded ones.
 --========================================================--
 
-local Wisp = require("wisp")
-
-------------------------------------------------------------
---  Auto-require all entity modules except excluded ones
-------------------------------------------------------------
-local exclude = { main = true, conf = true, wisp = true, app = true, root = true }
-for _, file in ipairs(love.filesystem.getDirectoryItems("")) do
-    if file:match("%.lua$") then
-        local name = file:match("^(.-)%.lua$")
-        if not exclude[name] then
-            _G[name:gsub("^%l", string.upper)] = require(name)
-        end
-    end
-end
-
+local Wisp = require("system.wisp")
+local require_components = require("system.require_components")
+require_components()
 ------------------------------------------------------------
 --  Define App class
 ------------------------------------------------------------

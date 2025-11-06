@@ -63,7 +63,7 @@ function Ball:new(name, context, x, y, radius, color)
     
     function b:scale_radius(scale)
         local oxy = self.properties.oxy
-        self.properties.r = self.properties.r + (oxy-10) /100
+        self.properties.r = self.properties.r + (oxy-10) / 50
     end
     b:activate("scale_radius")
     

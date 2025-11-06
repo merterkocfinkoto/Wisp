@@ -1,0 +1,8 @@
+{
+  "diagnostics": {
+    "disable": ["duplicate-set-field", "undefined-global"]
+  },
+  "workspace": {
+    "library": ["${3rd}/love2d/library"]
+  }
+}

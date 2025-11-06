@@ -19,7 +19,6 @@ function Wisp:new(name, context)
     w.properties = {}
     w.state = "idle"
     w.processes = {}
-    w.autonomy = function() end
     w.appearance = function() end
     w.attended = false
     w.controls = {}
@@ -71,42 +70,77 @@ function Wisp:get_wisp(name)
 end
 
 ------------------------------------------------------------
+-- Activate deactivate methods
+------------------------------------------------------------
+function Wisp:activate(method)
+    assert(type(method) == "string", "activate: method name must be a string")
+    self.processes[method] = true
+end
+
+function Wisp:deactivate(method)
+    assert(type(method) == "string", "activate: method name must be a string")
+    self.processes[method] = nil
+end
+
+
+------------------------------------------------------------
 -- Controls 
 ------------------------------------------------------------
-function Wisp:add_control(action, event, key, requires_attend)
-    self.controls[action] = {
-        event = event,
-        key = key,
-        requires_attend = requires_attend or false
+function Wisp:add_control(args)
+    assert(args.action and args.mode and args.event and args.key,
+        "add_control: missing required field (action, mode, event, key)")
+    
+    local a, m = args.action, args.mode
+    self.controls[a] = self.controls[a] or {}
+    self.controls[a][m] = {
+        event = args.event or false,
+        key = args.key or false,
+        requires_attend   = args.requires_attend   or false,
+        requires_active   = args.requires_active   or false,
+        requires_deactive = args.requires_deactive or false
     }
 end
 
-function Wisp:remove_control(action)
-    self.controls[action] = nil
-end
 
-function Wisp:update_control(action, event, key, requires_attend)
-    if self.controls[action] then
-        self.controls[action].event = event or self.controls[action].event
-        self.controls[action].key = key or self.controls[action].key
-        self.controls[action].requires_attend =
-            (requires_attend == nil) and self.controls[action].requires_attend or requires_attend
+
+function Wisp:remove_control(action, mode)
+    if not self.controls[action] then return end
+    if mode then
+        self.controls[action][mode] = nil
+        if next(self.controls[action]) == nil then
+            self.controls[action] = nil
+        end
+    else
+        self.controls[action] = nil
     end
 end
 
+
+function Wisp:update_control(args)
+    assert(args.action and args.mode, "update_control: missing 'action' or 'mode'")
+    local a, m = args.action, args.mode
+    if self.controls[a] and self.controls[a][m] then
+        local c = self.controls[a][m]
+        c.event = args.event or c.event
+        c.key = args.key or c.key
+        c.requires_attend   = (args.requires_attend   == nil) and c.requires_attend   or args.requires_attend
+        c.requires_active   = (args.requires_active   == nil) and c.requires_active   or args.requires_active
+        c.requires_deactive = (args.requires_deactive == nil) and c.requires_deactive or args.requires_deactive
+    end
+end
 
 ------------------------------------------------------------
 -- Update & Draw
 ------------------------------------------------------------
 function Wisp:update()
-    self:autonomy()
-    for _, name in ipairs(self.processes) do
-        if type(self[name]) == "function" then self[name](self) end
+    for name in pairs(self.processes) do
+        self[name](self)
     end
     for _, w in pairs(self.content) do
         if w.update then w:update() end
     end
 end
+
 
 function Wisp:draw()
     self:appearance()
@@ -126,11 +160,18 @@ end
 -- Recursive input handling
 ------------------------------------------------------------
 function Wisp:handle_input(event, key)
-    for action, c in pairs(self.controls) do
-        if c.event == event and c.key == key
-           and ((not c.requires_attend) or self.attended) then
-            local func = self[action]
-            if type(func) == "function" then func(self) end
+    for action, modes in pairs(self.controls) do
+        for mode, c in pairs(modes) do
+            if c.event == event and c.key == key
+               and ((not c.requires_attend) or self.attended)
+               and ((not c.requires_active) or self.processes[action])
+               and ((not c.requires_deactive) or not self.processes[action]) then
+
+                if mode == "fire" then self[action](self)
+                elseif mode == "activate" then self.processes[action] = true
+                elseif mode == "deactivate" then self.processes[action] = nil
+                end
+            end
         end
     end
     for _, sub in pairs(self.content) do

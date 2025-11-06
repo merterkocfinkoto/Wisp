@@ -33,6 +33,7 @@ function App:new(name, context)
             self.properties.initialized = true
         end
     end
+    a:activate("autonomy")
 
     --------------------------------------------------------
     --  Appearance: Background color
@@ -44,10 +45,11 @@ function App:new(name, context)
     --------------------------------------------------------
     --  Controls
     --------------------------------------------------------
-    a:add_control("spawn_ball",    "keypressed", "space", false)
-    a:add_control("spawn_hole",    "keypressed", "l",     false)
-    a:add_control("attend_random", "keypressed", "a",     false)
-    a:add_control("attend_random_2","keypressed","b",     false)
+    a:add_control{ action = "spawn_ball",     mode = "fire", event = "keypressed", key = "space", requires_attend = false }
+    a:add_control{ action = "spawn_hole",     mode = "fire", event = "keypressed", key = "l",     requires_attend = false }
+    a:add_control{ action = "attend_random",  mode = "fire", event = "keypressed", key = "a",     requires_attend = false }
+    a:add_control{ action = "attend_random_2",mode = "fire", event = "keypressed", key = "b",     requires_attend = false }
+
 
     --------------------------------------------------------
     --  METHODS

@@ -13,8 +13,6 @@ function Hole:new(name, context, x, y, radius, color)
         color = color or {0, 0, 0}
     }
 
-    h.autonomy = function() end
-
     h.appearance = function(self)
         love.graphics.setColor(self.properties.color)
         love.graphics.circle("fill", self.properties.x, self.properties.y, self.properties.r)

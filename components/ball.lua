@@ -9,7 +9,7 @@ function Ball:new(name, context, x, y, radius, color)
     b.properties = {
         x = x or math.random(50, w - 50),
         y = y or math.random(50, h - 50),
-        r = radius or math.random(15, 35),
+        r = 20, --radius or math.random(15, 35),
         color = color or {math.random(), math.random(), math.random()},
         speed = 0.4
     }
@@ -30,7 +30,11 @@ function Ball:new(name, context, x, y, radius, color)
     b:add_control{ action = "move_right", mode = "activate", event = "keypressed", key = "right", requires_attend = true }
     b:add_control{ action = "move_right", mode = "deactivate", event = "keyreleased", key = "right", requires_attend = true }
 
+    function b:de_attend() self.attended = false end
+    b:add_control{ action = "de_attend", mode = "fire", event = "keypressed", key = "f", requires_attend = true }
+
     b.autonomy = function(self)
+        print(b.properties.oxy)
         if self.attended then
             self.properties.color = {0, 0, 1}
         elseif self.properties.color[1] ~= 1 or self.properties.color[2] ~= 0 or self.properties.color[3] ~= 0 then

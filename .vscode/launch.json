@@ -1,0 +1,28 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Wisp (LÖVE)",
+            "type": "lua-local",
+            "request": "launch",
+            "program": {
+                "command": "love"
+            },
+            "args": ["${workspaceFolder}"],
+            "scriptRoots": ["${workspaceFolder}"],
+            "cwd": "${workspaceFolder}",
+            "stopOnEntry": false
+        },
+        {
+            "name": "Debug Wisp (Lua Interpreter)",
+            "type": "lua-local",
+            "request": "launch",
+            "program": {
+                "lua": "lua",
+                "file": "main.lua"
+            },
+            "cwd": "${workspaceFolder}",
+            "stopOnEntry": false
+        }
+    ]
+}

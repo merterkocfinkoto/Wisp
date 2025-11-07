@@ -5,6 +5,11 @@
 --  and input handling through its hierarchy.
 --========================================================--
 
+-- Initialize debugger if running in VS Code
+if os.getenv("LOCAL_LUA_DEBUGGER_VSCODE") == "1" then
+  require("lldebugger").start()
+end
+
 local Root = require("system.root")
 
 ------------------------------------------------------------
